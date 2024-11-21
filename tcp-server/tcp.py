@@ -66,7 +66,7 @@ line2, = ax.plot([], [], 'r-', lw=2)
 # Set axis limits
 ax.set_xlim(0, 20)  # Adjust to fit the sliding window
 # Adjust to fit the data range
-ax.set_ylim(-100+pi**2*100+100, 100+pi**2*100+100)
+ax.set_ylim(500, 1500)
 
 # Update function
 y_data_g = 0
@@ -83,8 +83,11 @@ def update(frame):
     y_datalist.append(y_data1)
     y_data2_list.append(y_data2)
 
-    # minimum = min(min(y_datalist), min(y_data2_list))
-    # maximum = max(max(y_datalist), max(y_data2_list))
+    minimum = min(*y_datalist, *y_data2_list)
+    maximum = max(*y_datalist, *y_data2_list)
+
+    minimum -= abs(maximum - minimum) * 0.3
+    maximum += abs(maximum - minimum) * 0.3
 
     # ax.set_ylim(minimum, maximum)  # Adjust the y-axis dynamically
 
@@ -142,7 +145,7 @@ while True:
     while True:
         # outdata = input('Enter response: ')
         outdata = 'trash'
-        time.sleep(0.1)
+        # time.sleep(0.1)
         conn.send(outdata.encode())
 
         indata = conn.recv(1024)
@@ -155,7 +158,8 @@ while True:
         y_data_g = x
         y_data_g2 = y
         update(0)
-        plt.savefig('test.png')
+        # plt.savefig('test.png')
+        plt.pause(0.1)
         # plt.(block=False)
         print('x: %d, y: %d, z: %d' % (x, y, z))
 
